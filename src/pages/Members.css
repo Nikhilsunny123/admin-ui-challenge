@@ -1,0 +1,49 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 2%;
+  color: #ddd;
+}
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+}
+.container {
+  height: 75vh;
+  overflow: auto;
+}
+
+.input {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: antiquewhite;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  max-height: 100px;
+  overflow-y: scroll;
+}
+.thead {
+  position: sticky;
+  top: 0;
+  background-color: #10186a;
+  z-index: 1;
+}
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  width: auto;
+}
+
+th {
+  border: 1px solid #ddd;
+}
+
+td {
+  border: 1px solid #ddd;
+}
