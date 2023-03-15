@@ -12,9 +12,9 @@ const Members = () => {
     const newstr = str.charAt(0).toUpperCase() + str.slice(1);
     return newstr;
   };
-  const handleRowClick = (rowData) => {
-    setSelectedRow(rowData);
-  };
+  // const handleRowClick = (rowData) => {
+  //   setSelectedRow(rowData);
+  // };
 
   const ondeleteData = (member) => {
     const datas = data.filter((value) => value.id !== member.id);
@@ -68,7 +68,7 @@ const Members = () => {
                   member={member}
                   convertUpper={convertUpper}
                   setIsEdit={setIsEdit}
-                  handleRowClick={handleRowClick}
+                  // handleRowClick={handleRowClick}
                 />
               ) : (
                 <tr id={member.id}>
@@ -112,45 +112,60 @@ const Edit = ({
   member,
   convertUpper,
   setIsEdit,
-  handleRowClick,
+
   data,
   setData,
 }) => {
-  const [inputData, setInputData] = useState({
-    name: member.name,
-    email: member.email,
-    role: convertUpper(member.role),
-  });
-
-  const onInputChange = (event) => {
-    // const { name, value } = event.target;
-    // setInputData({
-    //   ...inputData,
-    //   [name]: value,
-    // });
-    console.log(event);
+  const [name, setName] = useState(member.name);
+  const [email, setEmail] = useState(member.email);
+  const [role, setRole] = useState(member.role);
+  const onInputChange = (e, edit) => {
+    console.log(e.target.value);
+    edit(e.target.value);
+  };
+  const onEdit = (value) => {
+    const d = value.map((obj) => {
+      if (obj.id === value.id) {
+        return d;
+      }
+      return obj;
+    });
+    console.log(d);
   };
 
   return (
-    <tr id={member.id} onClick={() => handleRowClick(member)}>
+    <tr id={member.id}>
       <td>
         <input type="checkbox" />
       </td>
       <td>
-        <input type="text" value={inputData.name} onChange={onInputChange} />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => onInputChange(e, setName)}
+        />
       </td>
       <td>
-        <input type="text" value={inputData.email} onChange={onInputChange} />
+        <input
+          type="text"
+          value={email}
+          onChange={(e) => onInputChange(e, setEmail)}
+        />
       </td>
       <td>
-        <input type="text" value={inputData.role} onChange={onInputChange} />
+        <input
+          type="text"
+          value={role}
+          onChange={(e) => onInputChange(e, setRole)}
+        />
       </td>
       <td style={{ display: "flex", justifyContent: "space-between" }}>
         <SaveIcon
           style={{ cursor: "pointer" }}
           onClick={(value) => {
             setIsEdit(false);
-            onInputChange(value);
+            // onEdit(value);
+            console.log(value);
           }}
         />
       </td>
