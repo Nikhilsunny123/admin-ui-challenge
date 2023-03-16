@@ -14,6 +14,28 @@ const Members = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
 
+  //search
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filterData = (e, data, setData) => {
+    const { value } = e.target;
+    setSearchQuery(value);
+
+    const filteredData = data.filter((item) => {
+      const nameMatch = item.name.toLowerCase().includes(value.toLowerCase());
+      const emailMatch = item.email.toLowerCase().includes(value.toLowerCase());
+      const roleMatch = item.role.toLowerCase().includes(value.toLowerCase());
+
+      if (!value) {
+        return true; // return all data if search query is empty
+      }
+
+      return nameMatch || emailMatch || roleMatch;
+    });
+
+    setData(filteredData);
+  };
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -33,27 +55,7 @@ const Members = () => {
   const totalPages = Math.ceil(data.length / rowsPerPage);
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  console.log({
-    currentPage,
-    rowsPerPage,
-    indexOfLastRow,
-    indexOfFirstRow,
-    currentRows,
-    totalPages,
-    pageNumbers,
-  });
-  // const [searchQuery, setSearchQuery] = useState("");
-
-  // const handleRowClick = (rowData) => {
-  //   setSelectedRow(rowData);
-  // };
-
-  const ondeleteData = (member) => {
-    const datas = data.filter((value) => value.id !== member.id);
-    setData(datas);
-    console.log(datas);
-  };
-
+  //selecting rows
   const handleRowClick = (id) => {
     if (selectedRows.includes(id)) {
       setSelectedRows(selectedRows.filter((rowid) => rowid !== id));
@@ -73,11 +75,19 @@ const Members = () => {
     return selectedRows.includes(id);
   };
 
+  //Delete
+
   const handleDeleteSelectedRows = () => {
     const newData = data.filter((member) => !selectedRows.includes(member.id));
     setData(newData);
     setSelectedRows([]);
     setCurrentPage(1);
+  };
+
+  const ondeleteData = (member) => {
+    const datas = data.filter((value) => value.id !== member.id);
+    setData(datas);
+    console.log(datas);
   };
 
   useEffect(() => {
@@ -88,8 +98,8 @@ const Members = () => {
     <div className="main">
       <input
         className="input"
-        // value={searchQuery}
-        onKeyUp={(e) => filterData(e, data, setData)}
+        value={searchQuery}
+        onChange={(e) => filterData(e, data, setData)}
         placeholder="Search by name email or role"
       />
       <div className="container">
@@ -110,7 +120,7 @@ const Members = () => {
               member.isEdit ? (
                 <Edit
                   setData={setData}
-                  data={currentRows}
+                  data={data}
                   member={member}
                   setIsEdit={setIsEdit}
                   handleEdit={handleEdit}

@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
+const Item = ({ title, to, selected, setSelected }) => {
   return (
     <Box
       active={selected === title}
-      style={{ color: "grey", cursor: "pointer" }}
+      style={{ color: "#91acbf", cursor: "pointer" }}
       onClick={() => setSelected(title)}
       sx={{
         my: 2,
+
         "& .MuiTypography-root:hover": {
-          color: "#849e41 ",
+          color: "#470a45",
         },
       }}
     >
@@ -33,7 +34,7 @@ const SideBar = () => {
       justifyContent="flex-start"
       alignItems="center"
       gap="5%"
-      backgroundColor="#4c9ed9"
+      backgroundColor="#91acbf"
       padding="10px 20px"
     >
       <Typography variant="h6">ADMINS</Typography>

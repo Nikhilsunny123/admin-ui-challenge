@@ -48,7 +48,7 @@ td {
   border: 1px solid #ddd;
 }
 .main button {
-  background-color: rgb(87, 4, 4);
+  background-color: rgb(41, 94, 169);
 
   /* width: 20%; */
 }
@@ -63,6 +63,6 @@ td {
   justify-content: space-between;
 }
 button.active {
-  background-color: #007bff;
+  background-color: #36bdeb;
   color: #fff;
 }

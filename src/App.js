@@ -1,8 +1,7 @@
 import SideBar from "./components/SideBar";
 import Topbar from "./components/Topbar";
 import { Routes, Route } from "react-router-dom";
-
-import { Dashboard } from "@mui/icons-material";
+import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
 
 function App() {
