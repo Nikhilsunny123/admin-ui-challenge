@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+
 import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
+
 import "./Members.css";
 import {
   editData,
@@ -9,11 +9,13 @@ import {
   filterData,
   handleEdit,
 } from "../components/commonFunctions";
+import ModalDelete from "../components/ModalDelete";
+import ModalEdit from "../components/ModalEdit";
 const Members = () => {
   const [data, setData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   //search
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -114,12 +116,15 @@ const Members = () => {
             {currentRows.map((member) =>
               member.isEdit ? (
                 <Edit
+                  onClick={() => setIsEdit(true)}
                   setData={setData}
                   data={data}
                   member={member}
                   setIsEdit={setIsEdit}
                   handleEdit={handleEdit}
                   isEdit={isEdit}
+                  isModalOpen={isModalOpen}
+                  setIsModalOpen={setIsModalOpen}
                 />
               ) : (
                 <tr
@@ -149,12 +154,9 @@ const Members = () => {
                       }}
                     />
                     {!isEdit && (
-                      <DeleteForeverIcon
-                        style={{ cursor: "pointer" }}
-                        onClick={(value) => {
-                          ondeleteData(member);
-                          console.log(value);
-                        }}
+                      <ModalDelete
+                        ondeleteData={ondeleteData}
+                        member={member}
                       />
                     )}
                   </td>
@@ -164,67 +166,72 @@ const Members = () => {
           </tbody>
         </table>
       </div>
-      <div className="bottom">
-        {selectedRows.length !== 0 ? (
-          <button onClick={handleDeleteSelectedRows}>Delete Selected</button>
-        ) : (
-          <div></div>
-        )}
-        <div>
-          <button
-            onClick={() => handlePageChange(1)}
-            disabled={currentPage === 1}
-          >
-            {"<<"}
-          </button>
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            {"<"}
-          </button>
-
-          {pageNumbers.map((pageNumber) => (
+      {!isEdit && (
+        <div className="bottom">
+          {selectedRows.length !== 0 ? (
+            <button onClick={handleDeleteSelectedRows}>Delete Selected</button>
+          ) : (
+            <div></div>
+          )}
+          <div>
             <button
-              key={pageNumber}
-              onClick={() => handlePageChange(pageNumber)}
-              className={pageNumber === currentPage ? "active" : ""}
+              onClick={() => handlePageChange(1)}
+              disabled={currentPage === 1}
             >
-              {pageNumber}
+              {"<<"}
             </button>
-          ))}
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            {">"}
-          </button>
-          <button
-            onClick={() => handlePageChange(totalPages)}
-            disabled={currentPage === totalPages}
-          >
-            {">>"}
-          </button>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              {"<"}
+            </button>
+
+            {pageNumbers.map((pageNumber) => (
+              <button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+                className={pageNumber === currentPage ? "active" : ""}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              {">"}
+            </button>
+            <button
+              onClick={() => handlePageChange(totalPages)}
+              disabled={currentPage === totalPages}
+            >
+              {">>"}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
 
 export default Members;
 
-const Edit = ({ member, isEdit, setIsEdit, handleEdit, data, setData }) => {
+const Edit = ({
+  member,
+  isEdit,
+  setIsEdit,
+  isModalOpen,
+  setIsModalOpen,
+  data,
+  setData,
+}) => {
   const [newName, setName] = useState(member.name);
   const [newEmail, setEmail] = useState(member.email);
   const [newRole, setRole] = useState(member.role);
 
   const onInputChange = (e, edit) => {
-    console.log(e.target.value);
     edit(e.target.value);
-  };
-
-  const onSubmit = (values) => {
-    console.log(values);
   };
 
   return (
@@ -255,24 +262,16 @@ const Edit = ({ member, isEdit, setIsEdit, handleEdit, data, setData }) => {
         />
       </td>
       <td style={{ display: "flex", justifyContent: "space-between" }}>
-        <SaveIcon
-          onSubmit={onSubmit}
-          style={{ cursor: "pointer" }}
-          onClick={(value) => {
-            setIsEdit(false);
-            editData(
-              member.id,
-              data,
-              member.isEdit,
-
-              newName,
-              newEmail,
-              newRole,
-              setData
-            );
-
-            console.log(value);
-          }}
+        <ModalEdit
+          setIsEdit={setIsEdit}
+          editData={editData}
+          id={member.id}
+          data={data}
+          isEdit={member.isEdit}
+          newName={newName}
+          newEmail={newEmail}
+          newRole={newRole}
+          setData={setData}
         />
       </td>
     </tr>
