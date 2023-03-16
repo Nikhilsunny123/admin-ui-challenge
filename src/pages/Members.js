@@ -12,13 +12,37 @@ import {
 const Members = () => {
   const [data, setData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-  // const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRows, setSelectedRows] = useState([]);
 
-  // const handleSearchInputChange = (event) => {
-  //   console.log(event.target.value);
-  //   filterData(event.target.value);
-  // };
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
+
+  const handlePageChange = (pageNumber) => {
+    if (
+      pageNumber < 1 ||
+      pageNumber > totalPages ||
+      pageNumber === currentPage
+    ) {
+      return;
+    }
+    setCurrentPage(pageNumber);
+  };
+  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  console.log({
+    currentPage,
+    rowsPerPage,
+    indexOfLastRow,
+    indexOfFirstRow,
+    currentRows,
+    totalPages,
+    pageNumbers,
+  });
+  // const [searchQuery, setSearchQuery] = useState("");
 
   // const handleRowClick = (rowData) => {
   //   setSelectedRow(rowData);
@@ -28,6 +52,32 @@ const Members = () => {
     const datas = data.filter((value) => value.id !== member.id);
     setData(datas);
     console.log(datas);
+  };
+
+  const handleRowClick = (id) => {
+    if (selectedRows.includes(id)) {
+      setSelectedRows(selectedRows.filter((rowid) => rowid !== id));
+    } else {
+      setSelectedRows([...selectedRows, id]);
+    }
+  };
+
+  const handleSelectAllRows = (event) => {
+    if (event.target.checked) {
+      setSelectedRows(data.map((member) => member.id));
+    } else {
+      setSelectedRows([]);
+    }
+  };
+  const isRowSelected = (id) => {
+    return selectedRows.includes(id);
+  };
+
+  const handleDeleteSelectedRows = () => {
+    const newData = data.filter((member) => !selectedRows.includes(member.id));
+    setData(newData);
+    setSelectedRows([]);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -47,7 +97,7 @@ const Members = () => {
           <thead className="thead">
             <tr>
               <th>
-                <input type="checkbox" />
+                <input type="checkbox" onClick={handleSelectAllRows} />
               </th>
               <th>Name</th>
               <th>Email</th>
@@ -56,11 +106,11 @@ const Members = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((member) =>
+            {currentRows.map((member) =>
               member.isEdit ? (
                 <Edit
                   setData={setData}
-                  data={data}
+                  data={currentRows}
                   member={member}
                   setIsEdit={setIsEdit}
                   handleEdit={handleEdit}
@@ -68,9 +118,18 @@ const Members = () => {
                   // handleRowClick={handleRowClick}
                 />
               ) : (
-                <tr id={member.id}>
+                <tr
+                  id={member.id}
+                  style={{
+                    backgroundColor: isRowSelected(member.id) && "grey",
+                  }}
+                >
                   <td>
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      checked={isRowSelected(member.id)}
+                      onClick={() => handleRowClick(member.id)}
+                    />
                   </td>
                   <td>{member.name}</td>
                   <td>{member.email}</td>
@@ -101,7 +160,45 @@ const Members = () => {
           </tbody>
         </table>
       </div>
-      <button>Delete Selected</button>
+      <div className="bottom">
+        <button onClick={handleDeleteSelectedRows}>Delete Selected</button>
+        <div>
+          <button
+            onClick={() => handlePageChange(1)}
+            disabled={currentPage === 1}
+          >
+            {"<<"}
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            {"<"}
+          </button>
+
+          {pageNumbers.map((pageNumber) => (
+            <button
+              key={pageNumber}
+              onClick={() => handlePageChange(pageNumber)}
+              className={pageNumber === currentPage ? "active" : ""}
+            >
+              {pageNumber}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            {">"}
+          </button>
+          <button
+            onClick={() => handlePageChange(totalPages)}
+            disabled={currentPage === totalPages}
+          >
+            {">>"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

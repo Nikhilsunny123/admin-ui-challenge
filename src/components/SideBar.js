@@ -33,7 +33,7 @@ const SideBar = () => {
       justifyContent="flex-start"
       alignItems="center"
       gap="5%"
-      backgroundColor="#083657"
+      backgroundColor="#4c9ed9"
       padding="10px 20px"
     >
       <Typography variant="h6">ADMINS</Typography>
