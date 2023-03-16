@@ -3,15 +3,23 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import "./Members.css";
+import {
+  editData,
+  fetchData,
+  filterData,
+  handleEdit,
+} from "../components/commonFunctions";
 const Members = () => {
   const [data, setData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  // const [searchQuery, setSearchQuery] = useState("");
 
-  const convertUpper = (str) => {
-    const newstr = str.charAt(0).toUpperCase() + str.slice(1);
-    return newstr;
-  };
+  // const handleSearchInputChange = (event) => {
+  //   console.log(event.target.value);
+  //   filterData(event.target.value);
+  // };
+
   // const handleRowClick = (rowData) => {
   //   setSelectedRow(rowData);
   // };
@@ -22,30 +30,18 @@ const Members = () => {
     console.log(datas);
   };
 
-  const fetchData = () => {
-    const response = fetch(
-      "https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    return response;
-  };
   useEffect(() => {
-    fetchData();
+    fetchData(setData);
   }, []);
-  // console.log(selectedRow);
+
   return (
     <div className="main">
       <input
         className="input"
+        // value={searchQuery}
+        onKeyUp={(e) => filterData(e, data, setData)}
         placeholder="Search by name email or role"
-      ></input>
+      />
       <div className="container">
         <table className="table">
           <thead className="thead">
@@ -61,13 +57,14 @@ const Members = () => {
           </thead>
           <tbody>
             {data.map((member) =>
-              isEdit ? (
+              member.isEdit ? (
                 <Edit
                   setData={setData}
                   data={data}
                   member={member}
-                  convertUpper={convertUpper}
                   setIsEdit={setIsEdit}
+                  handleEdit={handleEdit}
+                  isEdit={isEdit}
                   // handleRowClick={handleRowClick}
                 />
               ) : (
@@ -77,24 +74,26 @@ const Members = () => {
                   </td>
                   <td>{member.name}</td>
                   <td>{member.email}</td>
-                  <td>{convertUpper(member.role)}</td>
+                  <td>{member.role}</td>
                   <td
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <EditIcon
                       style={{ cursor: "pointer" }}
-                      onClick={(value) => {
+                      onClick={() => {
                         setIsEdit(true);
-                        console.log(value);
+                        handleEdit(member.id, data, isEdit, setData);
                       }}
                     />
-                    <DeleteForeverIcon
-                      style={{ cursor: "pointer" }}
-                      onClick={(value) => {
-                        ondeleteData(member);
-                        console.log(value);
-                      }}
-                    />
+                    {!isEdit && (
+                      <DeleteForeverIcon
+                        style={{ cursor: "pointer" }}
+                        onClick={(value) => {
+                          ondeleteData(member);
+                          console.log(value);
+                        }}
+                      />
+                    )}
                   </td>
                 </tr>
               )
@@ -102,35 +101,25 @@ const Members = () => {
           </tbody>
         </table>
       </div>
+      <button>Delete Selected</button>
     </div>
   );
 };
 
 export default Members;
 
-const Edit = ({
-  member,
-  convertUpper,
-  setIsEdit,
+const Edit = ({ member, isEdit, setIsEdit, handleEdit, data, setData }) => {
+  const [newName, setName] = useState(member.name);
+  const [newEmail, setEmail] = useState(member.email);
+  const [newRole, setRole] = useState(member.role);
 
-  data,
-  setData,
-}) => {
-  const [name, setName] = useState(member.name);
-  const [email, setEmail] = useState(member.email);
-  const [role, setRole] = useState(member.role);
   const onInputChange = (e, edit) => {
     console.log(e.target.value);
     edit(e.target.value);
   };
-  const onEdit = (value) => {
-    const d = value.map((obj) => {
-      if (obj.id === value.id) {
-        return d;
-      }
-      return obj;
-    });
-    console.log(d);
+
+  const onSubmit = (values) => {
+    console.log(values);
   };
 
   return (
@@ -138,33 +127,45 @@ const Edit = ({
       <td>
         <input type="checkbox" />
       </td>
+
       <td>
         <input
           type="text"
-          value={name}
+          value={newName}
           onChange={(e) => onInputChange(e, setName)}
         />
       </td>
       <td>
         <input
           type="text"
-          value={email}
+          value={newEmail}
           onChange={(e) => onInputChange(e, setEmail)}
         />
       </td>
       <td>
         <input
           type="text"
-          value={role}
+          value={newRole}
           onChange={(e) => onInputChange(e, setRole)}
         />
       </td>
       <td style={{ display: "flex", justifyContent: "space-between" }}>
         <SaveIcon
+          onSubmit={onSubmit}
           style={{ cursor: "pointer" }}
           onClick={(value) => {
             setIsEdit(false);
-            // onEdit(value);
+            editData(
+              member.id,
+              data,
+              member.isEdit,
+
+              newName,
+              newEmail,
+              newRole,
+              setData
+            );
+
             console.log(value);
           }}
         />

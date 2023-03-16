@@ -47,3 +47,11 @@ th {
 td {
   border: 1px solid #ddd;
 }
+.main button {
+  background-color: rgb(87, 4, 4);
+  margin-top: 1%;
+  width: 30%;
+}
+.main button:hover {
+  background-color: rgb(141, 14, 14);
+}
