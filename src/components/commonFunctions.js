@@ -26,12 +26,23 @@ export const fetchData = (setData) => {
   return response;
 };
 
-export const filterData = (key, data, setData) => {
-  const searchQuery = key.target.value.toLowerCase();
-  const filtered = data.filter((row) =>
-    Object.values(row).join(" ").toLowerCase().includes(searchQuery)
-  );
-  setData(searchQuery ? filtered : data);
+export const filterData = (e, data, setData, setSearchQuery) => {
+  const { value } = e.target;
+  setSearchQuery(value);
+
+  const filteredData = data.filter((item) => {
+    const nameMatch = item.name.toLowerCase().includes(value.toLowerCase());
+    const emailMatch = item.email.toLowerCase().includes(value.toLowerCase());
+    const roleMatch = item.role.toLowerCase().includes(value.toLowerCase());
+
+    if (!value) {
+      return true; // return all data if search query is empty
+    }
+
+    return nameMatch || emailMatch || roleMatch;
+  });
+
+  setData(filteredData);
 };
 
 export const handleEdit = (id, data, isEdit, setData) => {

@@ -17,30 +17,34 @@ const Members = () => {
   //search
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filterData = (e, data, setData) => {
-    const { value } = e.target;
-    setSearchQuery(value);
-
-    const filteredData = data.filter((item) => {
-      const nameMatch = item.name.toLowerCase().includes(value.toLowerCase());
-      const emailMatch = item.email.toLowerCase().includes(value.toLowerCase());
-      const roleMatch = item.role.toLowerCase().includes(value.toLowerCase());
-
-      if (!value) {
-        return true; // return all data if search query is empty
-      }
-
-      return nameMatch || emailMatch || roleMatch;
-    });
-
-    setData(filteredData);
+  const handleInputChange = (event) => {
+    setSearchQuery(event.target.value.toUpperCase());
   };
+
+  const filterData = (data) => {
+    return data.filter((member) => {
+      const name = member.name.toUpperCase();
+      const role = member.role.toUpperCase();
+      const email = member.email.toUpperCase();
+
+      if (
+        name.includes(searchQuery) ||
+        role.includes(searchQuery) ||
+        email.includes(searchQuery)
+      ) {
+        return true;
+      }
+    });
+  };
+
+  const filteredData = filterData(data);
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
+  const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
 
   const handlePageChange = (pageNumber) => {
     if (
@@ -52,7 +56,7 @@ const Members = () => {
     }
     setCurrentPage(pageNumber);
   };
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   //selecting rows
@@ -94,12 +98,14 @@ const Members = () => {
     fetchData(setData);
   }, []);
 
+  console.log(selectedRows);
+
   return (
     <div className="main">
       <input
         className="input"
         value={searchQuery}
-        onChange={(e) => filterData(e, data, setData)}
+        onChange={handleInputChange}
         placeholder="Search by name email or role"
       />
       <div className="container">
@@ -171,7 +177,11 @@ const Members = () => {
         </table>
       </div>
       <div className="bottom">
-        <button onClick={handleDeleteSelectedRows}>Delete Selected</button>
+        {selectedRows.length !== 0 ? (
+          <button onClick={handleDeleteSelectedRows}>Delete Selected</button>
+        ) : (
+          <div></div>
+        )}
         <div>
           <button
             onClick={() => handlePageChange(1)}

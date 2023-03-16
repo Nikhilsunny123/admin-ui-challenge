@@ -64,7 +64,7 @@ const SideBar = () => {
         />
         <Item
           title="Help"
-          to="/"
+          to="/customerstable"
           selected={selected}
           setSelected={setSelected}
         />
