@@ -98,7 +98,11 @@ const Members = () => {
           <thead className="thead">
             <tr>
               <th>
-                <input type="checkbox" onClick={handleSelectAllRows} />
+                <input
+                  type="checkbox"
+                  checked={selectedRows.length === 0 ? false : true}
+                  onClick={handleSelectAllRows}
+                />
               </th>
               <th>Name</th>
               <th>Email</th>
