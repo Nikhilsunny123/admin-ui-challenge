@@ -2,12 +2,10 @@ import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const Item = ({ title, to, selected, setSelected }) => {
+const Item = ({ title, to }) => {
   return (
     <Box
-      active={selected === title}
       style={{ color: "#91acbf", cursor: "pointer" }}
-      onClick={() => setSelected(title)}
       sx={{
         my: 2,
 
@@ -24,7 +22,6 @@ const Item = ({ title, to, selected, setSelected }) => {
 };
 
 const SideBar = () => {
-  const [selected, setSelected] = useState("Dashboard");
   return (
     <Box
       display="flex"
@@ -34,7 +31,7 @@ const SideBar = () => {
       justifyContent="flex-start"
       alignItems="center"
       gap="5%"
-      backgroundColor="#91acbf"
+      backgroundColor="#0e3663"
       padding="10px 20px"
     >
       <Typography variant="h6">ADMINS</Typography>
@@ -49,25 +46,10 @@ const SideBar = () => {
         />
       </Box>
       <Box display="flex" flexDirection="column" justifyContent="center">
-        <Item
-          title="Dashboard"
-          to="/"
-          selected={selected}
-          setSelected={setSelected}
-        />
+        <Item title="Dashboard" to="/" />
 
-        <Item
-          title="Members"
-          to="/members"
-          selected={selected}
-          setSelected={setSelected}
-        />
-        <Item
-          title="Help"
-          to="/"
-          selected={selected}
-          setSelected={setSelected}
-        />
+        <Item title="Members" to="/members" />
+        <Item title="Help" to="/" />
       </Box>
     </Box>
   );
