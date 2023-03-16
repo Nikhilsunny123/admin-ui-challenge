@@ -39,6 +39,7 @@ export const filterData = (data, searchQuery) => {
     ) {
       return true;
     }
+    return false;
   });
 };
 
