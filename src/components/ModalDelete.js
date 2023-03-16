@@ -1,10 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-
-  DialogActions,
-} from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogActions } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useState } from "react";
 
