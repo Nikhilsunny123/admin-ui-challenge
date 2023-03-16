@@ -26,23 +26,20 @@ export const fetchData = (setData) => {
   return response;
 };
 
-export const filterData = (e, data, setData, setSearchQuery) => {
-  const { value } = e.target;
-  setSearchQuery(value);
+export const filterData = (data, searchQuery) => {
+  return data.filter((member) => {
+    const name = member.name.toLowerCase();
+    const role = member.role.toLowerCase();
+    const email = member.email.toLowerCase();
 
-  const filteredData = data.filter((item) => {
-    const nameMatch = item.name.toLowerCase().includes(value.toLowerCase());
-    const emailMatch = item.email.toLowerCase().includes(value.toLowerCase());
-    const roleMatch = item.role.toLowerCase().includes(value.toLowerCase());
-
-    if (!value) {
-      return true; // return all data if search query is empty
+    if (
+      name.includes(searchQuery) ||
+      role.includes(searchQuery) ||
+      email.includes(searchQuery)
+    ) {
+      return true;
     }
-
-    return nameMatch || emailMatch || roleMatch;
   });
-
-  setData(filteredData);
 };
 
 export const handleEdit = (id, data, isEdit, setData) => {

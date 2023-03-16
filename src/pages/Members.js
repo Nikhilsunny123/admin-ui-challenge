@@ -18,26 +18,11 @@ const Members = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleInputChange = (event) => {
-    setSearchQuery(event.target.value.toUpperCase());
+    setSearchQuery(event.target.value.toLowerCase());
+    setCurrentPage(1);
   };
 
-  const filterData = (data) => {
-    return data.filter((member) => {
-      const name = member.name.toUpperCase();
-      const role = member.role.toUpperCase();
-      const email = member.email.toUpperCase();
-
-      if (
-        name.includes(searchQuery) ||
-        role.includes(searchQuery) ||
-        email.includes(searchQuery)
-      ) {
-        return true;
-      }
-    });
-  };
-
-  const filteredData = filterData(data);
+  const filteredData = filterData(data, searchQuery);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,7 +55,7 @@ const Members = () => {
 
   const handleSelectAllRows = (event) => {
     if (event.target.checked) {
-      setSelectedRows(data.map((member) => member.id));
+      setSelectedRows(currentRows.map((member) => member.id));
     } else {
       setSelectedRows([]);
     }
@@ -131,7 +116,6 @@ const Members = () => {
                   setIsEdit={setIsEdit}
                   handleEdit={handleEdit}
                   isEdit={isEdit}
-                  // handleRowClick={handleRowClick}
                 />
               ) : (
                 <tr
